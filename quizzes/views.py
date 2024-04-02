@@ -48,7 +48,7 @@ class SimpleQuestionView(APIView):
         questions = Question.objects.filter(session=request.data['session'])
         serializer = QuestionSerializer(questions, many=True)
         for question in serializer.data:
-            question['question'] = json.loads(question['question'])
+            question['question'] = eval(question['question'])
         return Response(serializer.data)
 
     def delete(self, request):
