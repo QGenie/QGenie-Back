@@ -10,11 +10,12 @@ class Session(models.Model):
         return self.title
 
 class Question(models.Model):
-    question_types = [('multiple', 'Multiple Choices'), ('match', 'Match Answer'), ('simple', 'Simple Question'), ('true_false', 'True False'), ('fill', 'Fill Blank')]
-    type = models.CharField(max_length=16, choices=question_types, default='simple')
+    lang_types = [('arabic','arabic'),('english','english')]
+    lang = models.CharField(max_length=16, choices=lang_types, default='arabic')
     text = models.TextField(null=False, blank=False)
-    question = models.TextField(null=False, blank=False)
     session = models.ForeignKey(Session, on_delete=models.CASCADE)
+    question = models.TextField(null=False, blank=False)
+    
 
     def __str__(self):
         return self.question

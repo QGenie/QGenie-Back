@@ -7,7 +7,7 @@ import json
 
 class SessionView(APIView):
     permission_classes = [IsAuthenticated]
-    def post(self, request):
+    def post(self, request): 
         request.data['user'] = request.user.id
         serializer = SessionSerializer(data=request.data)
         if serializer.is_valid():
@@ -17,8 +17,8 @@ class SessionView(APIView):
 
     def get(self, request):
         sessions = Session.objects.filter(user=request.user)
-        serilizer = SessionSerializer(sessions, many=True)
-        return Response(serilizer.data)
+        serializer = SessionSerializer(sessions, many=True)
+        return Response(serializer.data)
 
     def delete(self, request):
         session = Session.objects.get(id=request.data['id'])
@@ -33,14 +33,18 @@ class SessionView(APIView):
 class SimpleQuestionView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request):
-        question_type = request.data['type']
-        questions = get_questions(request.data['text'], question_type)
+        questions = get_questions(request.data['text'], request.data['lang'])
         questions_str = str(questions)
         request.data['question'] = questions_str
+        print(request.data)
         serializer = QuestionSerializer(data=request.data)
         if serializer.is_valid():
             serializer.save()
-            request.data['question'] = questions
+            print('############')
+            print(request.data)
+            print('############')
+            print(serializer.data)
+            print('############')
             return Response(serializer.data)
         return Response(serializer.errors)
     
