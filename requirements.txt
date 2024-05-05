@@ -3,6 +3,3 @@ djangorestframework
 django-cors-headers
 pyjwt
 Pillow
-transformers
-torch
-torchvision
