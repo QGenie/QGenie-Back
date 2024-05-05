@@ -21,7 +21,7 @@ python manage.py migrate
 ```
 for running the server:
 ```bash
-python manage.py runserver 8000
+python manage.py runserver 8001
 ```
 
 ## Contributing
