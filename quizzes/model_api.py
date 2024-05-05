@@ -1,28 +1,38 @@
-def simple_question(text):
-    return [{ 'question': 'What is the color of the sky?', 'answer': "Blue"}, {'question': 'Why we are here?', 'answer': 'To learn'}]
+# from transformers import AutoTokenizer,AutoModelForSeq2SeqLM
 
-def multiple_choices(text):
-    return [{'question': 'What is the color of the sky?', 'choices': ['Blue', 'Red', 'Green', 'Yellow'], 'answer': 'Blue'}, {'question': 'Why we are here?', 'choices': ['To learn', 'To play', 'To eat', 'To sleep'], 'answer': 'To learn'}]
 
-def match_answer(text):
-    return {'question': ['What is the color of the sky?', 'Why we are here?'], 'answer': ['Blue', 'To learn']}
+# model = AutoModelForSeq2SeqLM.from_pretrained("MIIB-NLP/Arabic-question-generation")
+# tokenizer = AutoTokenizer.from_pretrained("MIIB-NLP/Arabic-question-generation")
 
-def true_false(text):
-    return [{'question': 'The sky is blue.', 'answer': 'True'}, {'question': 'We are here to learn.', 'answer': 'True'}]
+# def get_question(context,answer):
+#   text="context: " +context + " " + "answer: " + answer + " </s>"
+#   text_encoding = tokenizer.encode_plus(
+#       text,return_tensors="pt"
+#   )
+#   model.eval()
+#   generated_ids =  model.generate(
+#     input_ids=text_encoding['input_ids'],
+#     attention_mask=text_encoding['attention_mask'],
+#     max_length=64,
+#     num_beams=5,
+#     num_return_sequences=1
+#   )
+#   return tokenizer.decode(generated_ids[0],skip_special_tokens=True,clean_up_tokenization_spaces=True).replace('question: ',' ')
 
-def fill_blank(text):
-    return [{'question': 'The sky is __.', 'answer': 'blue'}, {'question': 'We are here to __.', 'answer': 'learn'}]
 
-def get_questions(text, question_type):
-    if question_type == 'simple':
-        return simple_question(text)
-    elif question_type == 'multiple':
-        return multiple_choices(text)
-    elif question_type == 'match':
-        return match_answer(text)
-    elif question_type == 'true_false':
-        return true_false(text)
-    elif question_type == 'fill':
-        return fill_blank(text)
-    else:
-        return []
+# def arabic_question(context, answer):
+#     return get_question(context,answer)
+
+
+
+# def english_question(text, answer):
+#     return 'What is the color of the sky?'
+
+
+# def get_questions(context, answer, lang):
+#     if lang == 'arabic':
+#         return get_question(context,answer)
+#     elif lang == 'english':
+#         return english_question(context, answer)
+#     else:
+#         return []

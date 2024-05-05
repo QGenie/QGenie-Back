@@ -1,13 +1,12 @@
 from rest_framework.views import APIView, Response
+import requests
 from rest_framework.permissions import IsAuthenticated
 from quizzes.models import Session, Question
 from quizzes.serializers import SessionSerializer, QuestionSerializer
-from quizzes.model_api import get_questions
-import json
 
 class SessionView(APIView):
     permission_classes = [IsAuthenticated]
-    def post(self, request):
+    def post(self, request): 
         request.data['user'] = request.user.id
         serializer = SessionSerializer(data=request.data)
         if serializer.is_valid():
@@ -17,8 +16,8 @@ class SessionView(APIView):
 
     def get(self, request):
         sessions = Session.objects.filter(user=request.user)
-        serilizer = SessionSerializer(sessions, many=True)
-        return Response(serilizer.data)
+        serializer = SessionSerializer(sessions, many=True)
+        return Response(serializer.data)
 
     def delete(self, request):
         session = Session.objects.get(id=request.data['id'])
@@ -33,23 +32,28 @@ class SessionView(APIView):
 class SimpleQuestionView(APIView):
     permission_classes = [IsAuthenticated]
     def post(self, request):
-        question_type = request.data['type']
-        questions = get_questions(request.data['text'], question_type)
-        questions_str = str(questions)
-        request.data['question'] = questions_str
-        serializer = QuestionSerializer(data=request.data)
+        api_url = "http://localhost:8000/generate_question/"
+        data = {"context": request.data['text'], "answer": request.data['answer']}
+        question_generated = requests.post(api_url, json=data).json().get('question')
+        request.data['question'] = question_generated
+        print(request.data)
+        serializer = QuestionSerializer(data={'lang':request.data['lang'],'text':request.data['text'],'session': request.data['session'],'question': request.data['question'],'answer': request.data['answer']})
         if serializer.is_valid():
             serializer.save()
-            request.data['question'] = questions
+            print('############')
+            print(request.data)
+            print('############')
+            print(serializer.data)
+            print('############')
             return Response(serializer.data)
         return Response(serializer.errors)
     
     def get(self, request):
-        questions = Question.objects.filter(session=request.data['session'])
-        serializer = QuestionSerializer(questions, many=True)
-        for question in serializer.data:
-            question['question'] = eval(question['question'])
-        return Response(serializer.data)
+        session_id = request.query_params.get('session')
+        if session_id:
+            questions = Question.objects.filter(session=session_id)
+            serializer = QuestionSerializer(questions, many=True)
+            return Response(serializer.data)
 
     def delete(self, request):
         question = Question.objects.get(id=request.data['id'])
